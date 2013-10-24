@@ -96,6 +96,7 @@ Note: In Solr 3.x in order to be able to retrieve the distance as score the foll
 For more info: http://wiki.apache.org/solr/SpatialSearch#Returning_the_distance
 
 @TODO As a side effect parameters passed in query() will be lost, filter() works properly.
+
 @TODO make geodist function flaggable when calling the filter_spatial
 
 ## Dataimport handler: ##
@@ -111,5 +112,5 @@ Example:
 	_response = _s.dataimport('status')
 	print _response.import_status
 	
-You can find me on [Twitter](https://twitter.com/charlesnagy "Charlesnagy Twitter"), [My Blog](http://charlesnagy.info/ "Charlesnagy.info") or [LinkedIn]("http://www.linkedin.com/in/nkaroly" "Károly Nagy - MySQL DBA")
+You can find me on [Twitter](https://twitter.com/charlesnagy "Charlesnagy Twitter"), [My Blog](http://charlesnagy.info/ "Charlesnagy.info") or [LinkedIn](http://www.linkedin.com/in/nkaroly "Károly Nagy - MySQL DBA")
 
