@@ -57,12 +57,12 @@ Example:
 	
 	from sunburnt import SolrInterface
 	si = SolrInterface('http://some.url:8983/solr/')
-	si.query('Query')
-	si.facet_ranger.update({
+	si = si.query('Query')
+	si = si.facet_ranger.update({
 		'price':
 			{'range.start': 1, 'range.end': 99999, 'range.gap': 5000}
 	})
-	
+		
 [More info](<http://charlesnagy.info/it/python/solr-python-interface-sunburnt-fork "Range facet support for sunburnt")
 	
 ## Spatial index: ##
@@ -75,10 +75,30 @@ Example:
 	from sunburnt import SolrInterface
 	SOLR_URL = 'http://some.url:8983/solr/'
 	_s = SolrInterface(SOLR_URL)
-	_s.query('*')
-	_s.filter_spatial(latlon=(47.4775899,18.8108992), distance=10)
+	_s = _s.query('*')
+	_s = _s.filter_spatial(latlon=(47.4775899,18.8108992), distance=10)
+	
+Order by distance:
 
-## Dataimport handler: ##	
+	_s = _s.filter_spatial(latlon=(47.4775899,18.8108992), distance=10).sort_by('score')
+	
+To have the distance in fields you need to add .field_limit(score=True)
+
+	_s = _s.filter_spatial(latlon=(47.4775899,18.8108992), distance=10).field_limit(score=True).sort_by('score')
+	
+Note: In Solr 3.x in order to be able to retrieve the distance as score the following workaround is necessary in search.py:
+
+	if self.qgeodist:
+	opts.update({
+		'q': '{!func}geodist()',
+	})
+
+For more info: http://wiki.apache.org/solr/SpatialSearch#Returning_the_distance
+
+@TODO As a side effect parameters passed in query() will be lost, filter() works properly.
+@TODO make geodist function flaggable when calling the filter_spatial
+
+## Dataimport handler: ##
 
 I had to trigger the dataimporter delta-import command from the code so I added support for this function. 
 
