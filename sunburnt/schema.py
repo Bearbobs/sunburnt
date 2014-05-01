@@ -647,6 +647,19 @@ class SolrFacetCounts(object):
         return SolrFacetCounts(**facet_counts_dict)
 
 
+class SolrStatsCounts(object):
+    members= ["stats_fields", ]
+    def __init__(self, **kwargs):
+        for member in self.members:
+            setattr(self, member, kwargs.get(member, ()))
+        self.stats_fields = dict(self.stats_fields)
+
+    @classmethod
+    def from_response(cls, response):
+        stats_counts_dict = dict(response.get("stats", {}))
+        return SolrStatsCounts(**stats_counts_dict)
+
+
 class SolrResponse(object):
     def __init__(self, schema, xmlmsg):
         self.schema = schema
@@ -668,6 +681,7 @@ class SolrResponse(object):
             self.import_status = SolrImportStatus(status_node)
 
         self.facet_counts = SolrFacetCounts.from_response(details)
+        self.stats_counts = SolrStatsCounts.from_response(details)
         self.highlighting = dict((k, dict(v))
                                  for k, v in details.get("highlighting", ()))
         more_like_these_nodes = \

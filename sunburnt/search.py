@@ -413,7 +413,7 @@ class BaseSearch(object):
     """Base class for common search options management"""
     option_modules = ('query_obj', 'filter_obj', 'spatial_obj', 'paginator',
                       'more_like_this', 'grouping', 'highlighter', 'faceter', 'facet_ranger',
-                      'sorter', 'facet_querier', 'field_limiter',)
+                      'sorter', 'facet_querier', 'field_limiter', 'statistics', )
 
     result_constructor = dict
 
@@ -429,6 +429,7 @@ class BaseSearch(object):
         self.sorter = SortOptions(self.schema)
         self.field_limiter = FieldLimitOptions(self.schema)
         self.facet_querier = FacetQueryOptions(self.schema)
+        self.statistics = StatsOptions(self.schema)
 
     def clone(self):
         return self.__class__(interface=self.interface, original=self)
@@ -493,6 +494,11 @@ class BaseSearch(object):
     def facet_query(self, *args, **kwargs):
         newself = self.clone()
         newself.facet_querier.update(self.Q(*args, **kwargs))
+        return newself
+
+    def stats(self, *args, **kwargs):
+        newself = self.clone()
+        newself.statistics.update(*args, **kwargs)
         return newself
 
     def highlight(self, fields=None, **kwargs):
@@ -876,6 +882,41 @@ class FacetRangeOptions(Options):
                 opts["facet.range"] = field
 
         return opts
+
+
+class StatsOptions(Options):
+    option_name = "stats"
+    opts = {"stats.field": str,}
+    facets = []
+
+    def __init__(self, schema, original=None):
+        self.schema = schema
+        if original is None:
+            self.fields = collections.defaultdict(dict)
+        else:
+            self.fields = copy.copy(original.fields)
+
+    def update(self, fields):
+        assert isinstance(fields, list)
+        self.fields = list()
+        if fields:
+            self.schema.check_fields(fields)
+            self.fields = fields
+
+    def options(self):
+        opts = {}
+        if self.fields:
+            opts[self.option_name] = True
+            opts.update(self.field_names_in_opts(opts, self.fields))
+
+        return opts
+
+    def field_names_in_opts(self, opts, fields):
+        if fields:
+            opts["stats.field"] = fields
+
+        return opts
+
 
 class GroupingOptions(Options):
     option_name="group"

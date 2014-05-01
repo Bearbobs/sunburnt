@@ -99,6 +99,22 @@ For more info: http://wiki.apache.org/solr/SpatialSearch#Returning_the_distance
 
 @TODO make geodist function flaggable when calling the filter_spatial
 
+## Stats Component ##
+
+http://wiki.apache.org/solr/StatsComponent
+StatsComponent is now available with stats function.
+
+Example:
+    
+
+    from sunburnt import SolrInterface
+
+    si = SolrInterface(SOLR_URL)
+    si = si.query('*')
+    si = si.stats(fields=['price', ])
+    _r = si.execute()
+    print _r.stats_counts.stats_fields
+
 ## Dataimport handler: ##
 
 I had to trigger the dataimporter delta-import command from the code so I added support for this function. 
