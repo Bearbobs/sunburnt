@@ -101,8 +101,9 @@ For more info: http://wiki.apache.org/solr/SpatialSearch#Returning_the_distance
 
 ## Stats Component ##
 
-http://wiki.apache.org/solr/StatsComponent
 StatsComponent is now available with stats function.
+
+More info: http://wiki.apache.org/solr/StatsComponent
 
 Example:
     
