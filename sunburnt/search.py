@@ -280,9 +280,10 @@ class LuceneQuery(object):
         for value in args:
             self.add_exact(None, value, terms_or_phrases)
         for k, v in kwargs.items():
-            try:
-                field_name, rel = k.split("__")
-            except ValueError:
+            if not self.schema.match_field(k):
+                _parts = k.split('__')
+                field_name, rel = '__'.join(_parts[:-1]), _parts[-1]
+            else:
                 field_name, rel = k, 'eq'
             field = self.schema.match_field(field_name)
             if not field:
